@@ -21,11 +21,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 @Controller
-public class MainPage {
+public class MainController {
 
     @RequestMapping("/")
     public String index(){
-        return "Index Page";
+        return "index";
     }
 
 
@@ -53,7 +53,6 @@ public class MainPage {
                 "</html>";
         printWriter.write(msg);
         printWriter.close();
-
     }
 
 }
