@@ -12,10 +12,15 @@ package com.zerobase.fastlms;
 // http://localhost:8080/
 
 
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+@Controller
 public class MainPage {
 
     @RequestMapping("/")
@@ -24,12 +29,31 @@ public class MainPage {
     }
 
 
+    // request -> WEB -> SERVER
+    // response -> SERVER -> WEB
     @RequestMapping("/hello")
-    public String hello(){
+    public void hello(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        String msg = "<p>hello</p> <p>fastlms website!!!</p>";
 
-        return msg;
+        response.setContentType("text/html;charset=UTF-8");
+
+        PrintWriter printWriter = response.getWriter();
+
+
+        String msg =
+                "<html>" +
+                        "<head>" +
+                        "<meta charset='utf-8'>" +
+                        "</head>" +
+                        "<body>" +
+                        "<p>hello</p>" +
+                        "<p>fastlms website!!!</p>" +
+                        "<p> 안녕하세요 </p>"+
+                        "</body>" +
+                "</html>";
+        printWriter.write(msg);
+        printWriter.close();
+
     }
 
 }
