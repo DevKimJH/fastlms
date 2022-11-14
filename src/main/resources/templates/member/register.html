@@ -5,13 +5,38 @@
     <title>회원 가입</title>
 </head>
 <body>
-    <h1>회원 가입</h1>
+<h1>회원 가입</h1>
 
-    <!--
-     아이디(이메일), 이름, 전화번호,
-     -->
-    <input type="email" name="userId"/>
-    <input type="text" name="uesrName"/>
+<!--
+ 아이디(이메일), 이름, 전화번호,
+ -->
+
+    <form method="post">
+
+        <div>
+            <input type="email" name="userId" placeholder="아이디(이메일) 입력" required/>
+        </div>
+
+        <div>
+            <input type="text" name="userName" placeholder="이름 입력" required/>
+        </div>
+
+        <div>
+            <input type="password" name="password" placeholder="비밀번호 입력" required/>
+        </div>
+
+        <div>
+            <input type="password" name="rePassword" placeholder="비밀번호 확인 입력" required/>
+        </div>
+
+        <div>
+            <input type="tel" name="phone" placeholder="전화번호 입력" required/>
+        </div>
+        <div>
+            <button>회원 가입 하기</button>
+        </div>
+
+    </form>
 
 </body>
 </html>

@@ -1,0 +1,19 @@
+spring:
+  devtools:
+    livereload:
+      enabled: true
+  thymeleaf:
+    cache: true
+
+  datasource:
+    url: jdbc:mariadb://127.0.0.1:3306/minicampus
+    driver-class-name: org.mariadb.jdbc.Driver
+    username: minicampus_user
+    password: zerobase
+
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
