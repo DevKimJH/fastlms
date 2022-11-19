@@ -48,6 +48,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 )
                 .permitAll();
 
+        // admin/** 페이지는 ROLE_ADMIN 권한이 있어야 접근 가능하다
+        http.authorizeRequests()
+                        .antMatchers("/admin/**")
+                                .hasAuthority("ROLE_ADMIN");
+
+
 
         // 로그인 페이지 설정
         http.formLogin()
@@ -61,6 +67,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .logoutSuccessUrl("/") // index.html 로 이동
                 .invalidateHttpSession(true); // 세션 모두 초기화
 
+
+        // 접근권한없는 페이지를 user가 접근했을 때 /error/denied page로 이동하겠다.
+        http.exceptionHandling()
+                .accessDeniedPage("/error/denied");
 
         super.configure(http);
     }

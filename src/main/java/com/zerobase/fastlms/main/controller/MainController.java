@@ -44,6 +44,14 @@ public class MainController {
     }
 
 
+    @RequestMapping("/error/denied")
+    public String errorDenied(){
+
+        return "error/denied";
+    }
+
+
+
     // request -> WEB -> SERVER
     // response -> SERVER -> WEB
     @RequestMapping("/hello")

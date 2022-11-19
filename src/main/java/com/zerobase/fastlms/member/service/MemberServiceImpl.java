@@ -106,6 +106,12 @@ public class MemberServiceImpl implements MemberService {
         // uuid로 가져온 member row 정보를 member에 저장
         Member member = optionalMember.get();
 
+        // 이미 활성화된 계정일 경우
+        if(member.isEmailAuthYn()){
+            return false;
+        }
+
+
         // 이메일 인증 여부를 Y로 변경
         member.setEmailAuthYn(true);
         member.setEmailAuthDt(LocalDateTime.now());
@@ -222,6 +228,10 @@ public class MemberServiceImpl implements MemberService {
 
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
         grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+
+        if(member.isAdminYn()){
+            grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        }
 
         return new User(member.getUserId(), member.getPassword(), grantedAuthorities);
     }
