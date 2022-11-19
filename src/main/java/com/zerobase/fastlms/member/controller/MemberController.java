@@ -2,7 +2,7 @@ package com.zerobase.fastlms.member.controller;
 
 import com.zerobase.fastlms.member.model.MemberInput;
 import com.zerobase.fastlms.member.model.ResetPasswordInput;
-import com.zerobase.fastlms.member.service.impl.MemberService;
+import com.zerobase.fastlms.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

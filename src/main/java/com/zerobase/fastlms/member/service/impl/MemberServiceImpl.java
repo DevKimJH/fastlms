@@ -1,13 +1,15 @@
-package com.zerobase.fastlms.member.service;
+package com.zerobase.fastlms.member.service.impl;
 
 
+import com.zerobase.fastlms.admin.dto.MemberDto;
+import com.zerobase.fastlms.admin.mapper.MemberMapper;
 import com.zerobase.fastlms.components.MailComponents;
 import com.zerobase.fastlms.member.entity.Member;
 import com.zerobase.fastlms.member.exception.MemberNotEmailAuthException;
 import com.zerobase.fastlms.member.model.MemberInput;
 import com.zerobase.fastlms.member.model.ResetPasswordInput;
 import com.zerobase.fastlms.member.repository.MemberRepository;
-import com.zerobase.fastlms.member.service.impl.MemberService;
+import com.zerobase.fastlms.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -15,7 +17,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -30,6 +31,8 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
     private final MailComponents mailComponents;
+
+    private final MemberMapper memberMapper;
 
     /**
      * 회원 가입
@@ -205,6 +208,19 @@ public class MemberServiceImpl implements MemberService {
             throw new RuntimeException(" 유효한 날짜가 아닙니다. ");
         }
         return true;
+    }
+
+    @Override
+    public List<MemberDto> list() {
+
+        MemberDto parameter = new MemberDto();
+        List<MemberDto> list = memberMapper.selectList(parameter);
+
+
+        return list;
+
+        //return memberRepository.findAll();
+
     }
 
 

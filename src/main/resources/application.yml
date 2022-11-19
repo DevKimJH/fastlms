@@ -31,3 +31,12 @@ spring:
 logging:
   level:
     root: debug
+
+
+mybatis:
+  mapper-locations: mybatis/**/*.xml #
+  configuration:
+    map-underscore-to-camel-case: true  # underbar camelCase로 변경해주는 설정
+    log-impl: org.apache.ibatis.logging.commons.JakartaCommonsLoggingImpl # 로그 관련 설정
+
+
