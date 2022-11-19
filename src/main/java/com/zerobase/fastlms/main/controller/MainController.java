@@ -1,4 +1,4 @@
-package com.zerobase.fastlms;
+package com.zerobase.fastlms.main.controller;
 
 // MainPage 클래스를 만드는 목적
 // 매핑하기 위해서

@@ -3,13 +3,23 @@ package com.zerobase.fastlms.member.service;
 
 import com.zerobase.fastlms.components.MailComponents;
 import com.zerobase.fastlms.member.entity.Member;
+import com.zerobase.fastlms.member.exception.MemberNotEmailAuthException;
 import com.zerobase.fastlms.member.model.MemberInput;
 import com.zerobase.fastlms.member.repository.MemberRepository;
 import com.zerobase.fastlms.member.service.impl.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -34,6 +44,10 @@ public class MemberServiceImpl implements MemberService {
             return false;
         }
 
+        // 스프링 시큐리티
+        String encPassword = BCrypt.hashpw(parameter.getPassword(), BCrypt.gensalt());
+
+
         String uuid = UUID.randomUUID().toString();
 
         
@@ -56,7 +70,7 @@ public class MemberServiceImpl implements MemberService {
                 .userId(parameter.getUserId())
                 .userName(parameter.getUserName())
                 .phone(parameter.getPhone())
-                .password(parameter.getPassword())
+                .password(encPassword)
                 .regDt(LocalDateTime.now())
                 .emailAuthYn(false)
                 .emailAuthKey(uuid)
@@ -97,5 +111,30 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.save(member);
 
         return true;
+    }
+
+
+    /**
+     * SpringSecurity 사용을 위한 메서드
+     */
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        // 현재 시스템에서 username 은 email 의미
+        Optional<Member> optionalMember = memberRepository.findById(username);
+
+        if(!optionalMember.isPresent()){
+            throw new UsernameNotFoundException("회원 정보가 존재하지 않습니다.");
+        }
+
+        Member member = optionalMember.get();
+
+        if(!member.isEmailAuthYn()){
+            throw new MemberNotEmailAuthException("이메일 활성화 이후에 로그인을 해주세요.");
+        }
+
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+
+        return new User(member.getUserId(), member.getPassword(), grantedAuthorities);
     }
 }
