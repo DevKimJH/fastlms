@@ -19,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -215,7 +216,22 @@ public class MemberServiceImpl implements MemberService {
     public List<MemberDto> list(MemberParam parameter) {
 
         //MemberDto parameter = new MemberDto();
+
+        long totalCount = memberMapper.selectListCount(parameter);
+
         List<MemberDto> list = memberMapper.selectList(parameter);
+
+        // list가 empty인 경우
+        if(!CollectionUtils.isEmpty(list)){
+
+            int i = 0;
+
+            for(MemberDto x : list){
+                x.setTotalCount(totalCount);
+                x.setSeq(totalCount - parameter.getPageStart() - i);
+                i++;
+            }
+        }
 
 
         return list;

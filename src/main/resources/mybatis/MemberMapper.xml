@@ -4,6 +4,39 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zerobase.fastlms.admin.mapper.MemberMapper">
 
+    <select id="selectListCount"
+            parameterType="com.zerobase.fastlms.admin.model.MemberParam"
+            resultType="long">
+
+        select count(*)
+          from member
+        where 1=1
+
+        <if test="searchType != null and searchValue != null">
+            <choose>
+                <when test="searchType == 'userId'">
+                    and user_id like concat('%', #{searchValue}, '%')
+                </when>
+                <when test="searchType == 'userName'">
+                    and user_name like concat('%', #{searchValue}, '%')
+                </when>
+                <when test="searchType == 'phone'">
+                    and phone like concat('%', #{searchValue}, '%')
+                </when>
+                <otherwise>
+                    and
+                    (
+                    user_id like concat('%', #{searchValue}, '%')
+                    or
+                    user_name like concat('%', #{searchValue}, '%')
+                    or
+                    phone like concat('%', #{searchValue}, '%')
+                    )
+                </otherwise>
+            </choose>
+        </if>
+    </select>
+
 
     <select id="selectList"
             parameterType="com.zerobase.fastlms.admin.model.MemberParam"
@@ -36,6 +69,10 @@
             </choose>
         </if>
 
-        limit 0, 10
+        limit #{pageStart}, 10
     </select>
+    <!-- limit 0 , 10 pageIndex : 1-->
+    <!-- limit 10, 10 pageIndex : 2-->
+    <!-- limit 20, 10 pageIndex : 3-->
+    <!-- limit 30, 10 pageIndex : 4-->
 </mapper>

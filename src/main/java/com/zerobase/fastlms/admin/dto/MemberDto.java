@@ -21,4 +21,8 @@ public class MemberDto {
     String resetPasswordKey;
     LocalDateTime resetPasswordLimitDt;
     boolean adminYn;
+
+    // 추가 컬럼
+    long totalCount;
+    long seq;
 }
