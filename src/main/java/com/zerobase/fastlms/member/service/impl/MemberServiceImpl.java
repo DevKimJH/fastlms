@@ -6,7 +6,9 @@ import com.zerobase.fastlms.admin.mapper.MemberMapper;
 import com.zerobase.fastlms.admin.model.MemberParam;
 import com.zerobase.fastlms.components.MailComponents;
 import com.zerobase.fastlms.member.entity.Member;
+import com.zerobase.fastlms.member.entity.MemberCode;
 import com.zerobase.fastlms.member.exception.MemberNotEmailAuthException;
+import com.zerobase.fastlms.member.exception.MemberStopUserException;
 import com.zerobase.fastlms.member.model.MemberInput;
 import com.zerobase.fastlms.member.model.ResetPasswordInput;
 import com.zerobase.fastlms.member.repository.MemberRepository;
@@ -21,6 +23,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +44,6 @@ public class MemberServiceImpl implements MemberService {
      */
     @Override
     public boolean register(MemberInput parameter) {
-
 
         Optional<Member> optionalMember = memberRepository.findById(parameter.getUserId());
 
@@ -68,9 +70,9 @@ public class MemberServiceImpl implements MemberService {
         member.setEmailAuthYn(false);
         member.setEmailAuthKey(uuid);
          */
-        
 
-        // 위와 같은 set 방식을 @build라는 어노테이션을 통해 
+
+        // 위와 같은 set 방식을 @build라는 어노테이션을 통해
         // 아래와 같이 구현 가능
         Member member = Member.builder()
                 .userId(parameter.getUserId())
@@ -80,9 +82,10 @@ public class MemberServiceImpl implements MemberService {
                 .regDt(LocalDateTime.now())
                 .emailAuthYn(false)
                 .emailAuthKey(uuid)
+                .userStatus(Member.MEMBER_STATUS_REQ)
                 .build();
 
-        
+
 
         memberRepository.save(member);
 
@@ -119,6 +122,7 @@ public class MemberServiceImpl implements MemberService {
 
         // 이메일 인증 여부를 Y로 변경
         member.setEmailAuthYn(true);
+        member.setUserStatus(MemberCode.MEMBER_STATUS_ING);
         member.setEmailAuthDt(LocalDateTime.now());
         memberRepository.save(member);
 
@@ -240,6 +244,76 @@ public class MemberServiceImpl implements MemberService {
 
     }
 
+    @Override
+    public MemberDto detail(String userId) {
+
+        Optional<Member> optionalMember = memberRepository.findById(userId);
+        if(!optionalMember.isPresent()){
+            return null;
+        }
+
+
+        Member member = optionalMember.get();
+
+        /*
+        MemberDto memberDto = new MemberDto();
+        memberDto.setUserId(member.getUserId());
+        memberDto.setUserName(member.getUserName());
+        memberDto.setPhone(member.getPhone());
+        memberDto.setRegDt(member.getRegDt());
+        memberDto.setEmailAuthYn(member.isEmailAuthYn());
+        memberDto.setEmailAuthDt(member.getEmailAuthDt());
+        memberDto.setEmailAuthKey(member.getEmailAuthKey());
+        memberDto.setResetPasswordKey(member.getResetPasswordKey());
+        memberDto.setResetPasswordLimitDt(member.getResetPasswordLimitDt());
+        memberDto.setAdminYn(member.isAdminYn());
+         */
+
+        return MemberDto.of(member);
+    }
+
+    @Override
+    public boolean updateStatus(String userId, String userStatus) {
+
+        // 현재 시스템에서 username 은 email 의미
+        Optional<Member> optionalMember = memberRepository.findById(userId);
+
+        if(!optionalMember.isPresent()){
+            throw new UsernameNotFoundException("회원 정보가 존재하지 않습니다.");
+        }
+
+        Member member = optionalMember.get();
+
+        member.setUserStatus(userStatus);
+        memberRepository.save(member);
+
+        return true;
+    }
+
+    @Override
+    public boolean updatePassword(String userId, String password) {
+
+
+        System.out.println("####################");
+        System.out.println(userId);
+        System.out.println("####################");
+
+        // 현재 시스템에서 username 은 email 의미
+        Optional<Member> optionalMember = memberRepository.findById(userId);
+
+        if(!optionalMember.isPresent()){
+            throw new UsernameNotFoundException("회원 정보가 존재하지 않습니다.");
+        }
+
+        Member member = optionalMember.get();
+
+        String encPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+        member.setPassword(encPassword);
+        memberRepository.save(member);
+
+        return true;
+    }
+
 
     /**
      * SpringSecurity 사용을 위한 메서드
@@ -255,9 +329,19 @@ public class MemberServiceImpl implements MemberService {
 
         Member member = optionalMember.get();
 
-        if(!member.isEmailAuthYn()){
+        if(Member.MEMBER_STATUS_REQ.equals(member.getUserStatus())){
             throw new MemberNotEmailAuthException("이메일 활성화 이후에 로그인을 해주세요.");
         }
+
+        if (Member.MEMBER_STATUS_STOP.equals(member.getUserStatus())) {
+            throw new MemberStopUserException("정지된 회원입니다.");
+        }
+
+        /*
+        if(!member.isEmailAuthYn()){
+
+        }
+         */
 
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
         grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_USER"));
