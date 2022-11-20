@@ -12,6 +12,8 @@ public class MemberParam {
     String searchType;
     String searchValue;
 
+    String userId;
+
     /*
     limit 0, 10 --> pageIndex : 1
     limit 0, 10 --> pageIndex : 1

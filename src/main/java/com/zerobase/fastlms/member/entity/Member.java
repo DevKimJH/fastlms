@@ -1,10 +1,7 @@
 package com.zerobase.fastlms.member.entity;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -15,7 +12,8 @@ import java.time.LocalDateTime;
 @Builder
 @Data
 @Entity
-public class Member {
+@ToString
+public class Member implements MemberCode{
 
     @Id
     private String userId;
@@ -34,5 +32,6 @@ public class Member {
     // 관리자인지 아닌지
     private boolean adminYn;
 
-
+    // 유저 상태
+    private String userStatus; // 이용 가능한 상태, 정지 상태
 }
