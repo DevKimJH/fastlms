@@ -35,7 +35,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http.csrf().disable();
-
+        http.headers().frameOptions().sameOrigin();
 
         // index, 회원가입, email인증 화면은 로그인 상태 없이 사용할 수 있어야 함
         // 비밀번호 찾기, 비밀번호 초기화 화면 추가
