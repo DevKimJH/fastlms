@@ -5,8 +5,8 @@ import com.zerobase.fastlms.admin.model.CommonParam;
 import lombok.Data;
 
 @Data
-public class CourseParam extends CommonParam {
+public class ServiceResult {
+    boolean result;
+    String message;
 
-    long id; // course.id
-    long categoryId;
 }
