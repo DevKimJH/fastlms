@@ -1,17 +1,23 @@
 package com.zerobase.fastlms.member.service.impl;
 
 
+import com.zerobase.fastlms.admin.dto.LoginHistoryDto;
 import com.zerobase.fastlms.admin.dto.MemberDto;
+import com.zerobase.fastlms.admin.entity.Category;
+import com.zerobase.fastlms.admin.mapper.LoginHistoryMapper;
 import com.zerobase.fastlms.admin.mapper.MemberMapper;
+import com.zerobase.fastlms.admin.model.LoginHistoryParam;
 import com.zerobase.fastlms.admin.model.MemberParam;
 import com.zerobase.fastlms.components.MailComponents;
 import com.zerobase.fastlms.course.model.ServiceResult;
+import com.zerobase.fastlms.member.entity.LoginHistory;
 import com.zerobase.fastlms.member.entity.Member;
 import com.zerobase.fastlms.member.entity.MemberCode;
 import com.zerobase.fastlms.member.exception.MemberNotEmailAuthException;
 import com.zerobase.fastlms.member.exception.MemberStopUserException;
 import com.zerobase.fastlms.member.model.MemberInput;
 import com.zerobase.fastlms.member.model.ResetPasswordInput;
+import com.zerobase.fastlms.member.repository.LoginHistoryRepository;
 import com.zerobase.fastlms.member.repository.MemberRepository;
 import com.zerobase.fastlms.member.service.MemberService;
 import com.zerobase.fastlms.util.PasswordUtils;
@@ -37,9 +43,10 @@ import java.util.UUID;
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
+    private final LoginHistoryRepository loginHistoryRepository;
     private final MailComponents mailComponents;
-
     private final MemberMapper memberMapper;
+    private final LoginHistoryMapper loginHistoryMapper;
 
     /**
      * 회원 가입
@@ -408,6 +415,45 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.save(member);
 
         return new ServiceResult(true);
+    }
+
+    @Override
+    public ServiceResult addLoginHistory(LoginHistoryParam parameter) {
+
+        // 현재 시스템에서 username 은 email 의미
+        Optional<Member> optionalMember = memberRepository.findById(parameter.getUserId());
+
+        if(!optionalMember.isPresent()){
+            return new ServiceResult(false, "회원 정보가 존재하지 않습니다.");
+        }
+
+        Member member = optionalMember.get();
+
+        member.setLastLoginTime(parameter.getLoginTime());
+        memberRepository.save(member);
+
+        LoginHistory loginHistory = LoginHistory.builder()
+                .userId(parameter.getUserId())
+                .clientIp(parameter.getClientIp())
+                .userAgent(parameter.getUserAgent())
+                .loginTime(parameter.getLoginTime())
+                .build();
+
+
+        loginHistoryRepository.save(loginHistory);
+
+        return new ServiceResult(true);
+    }
+
+    @Override
+    public List<LoginHistoryDto> listHistory(String userId) {
+
+        List<LoginHistoryDto> list = loginHistoryMapper.selectList(userId);
+
+        return list;
+
+
+
     }
 
 

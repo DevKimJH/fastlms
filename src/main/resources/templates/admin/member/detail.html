@@ -106,6 +106,25 @@
             <a href="list.do"> 목록 </a>
         </div>
 
+        <table>
+            <thead>
+            <tr>
+                <th>NO</th>
+                <th>로그인 일자</th>
+                <th>접속 IP</th>
+                <th>접속 UserAgent</th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr th:each="x : ${historyList}">
+                    <td th:text="${x.id}">1</td>
+                    <td th:text="${x.loginTime}"></td>
+                    <td th:text="${x.clientIp}"></td>
+                    <td th:text="${x.userAgent}"></td>
+                </tr>
+            </tbody>
+        </table>
+
     </div>
 </body>
 </html>

@@ -1,6 +1,8 @@
 package com.zerobase.fastlms.member.service;
 
+import com.zerobase.fastlms.admin.dto.LoginHistoryDto;
 import com.zerobase.fastlms.admin.dto.MemberDto;
+import com.zerobase.fastlms.admin.model.LoginHistoryParam;
 import com.zerobase.fastlms.admin.model.MemberParam;
 import com.zerobase.fastlms.course.model.ServiceResult;
 import com.zerobase.fastlms.member.entity.Member;
@@ -74,4 +76,16 @@ public interface MemberService extends UserDetailsService {
      * 회원을 탈퇴시켜 주는 로직
      */
     ServiceResult withdraw(String userId, String password);
+
+
+    /**
+     * 회원이 로그인을 성공하였을 때 히스토리 추가
+     */
+    ServiceResult addLoginHistory(LoginHistoryParam parameter);
+
+
+    /**
+     * 해당 회원의 로그인 기록을 조회
+     */
+    List<LoginHistoryDto> listHistory(String userId);
 }
