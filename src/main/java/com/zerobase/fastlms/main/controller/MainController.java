@@ -13,16 +13,20 @@ package com.zerobase.fastlms.main.controller;
 
 
 import com.zerobase.fastlms.components.MailComponents;
+import com.zerobase.fastlms.course.dto.BannerDto;
+import com.zerobase.fastlms.course.service.BannerService;
 import com.zerobase.fastlms.util.RequestUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -31,10 +35,10 @@ public class MainController {
 
 
     private final MailComponents mailComponents;
-
+    private final BannerService bannerService;
 
     @RequestMapping("/")
-    public String index(HttpServletRequest request){
+    public String index(Model model, HttpServletRequest request){
 
         /*
         String email= "hg116701@naver.com";
@@ -45,11 +49,17 @@ public class MainController {
         //mailComponents.sendMailTest();
         //mailComponents.sendMail(email, subject, text);
 
+        /*
         String userAgent = RequestUtils.getUserAgent(request);
         String clientIp = RequestUtils.getClientIP(request);
 
         log.info(userAgent);
         log.info(clientIp);
+         */
+
+        List<BannerDto> list = bannerService.frontList();
+
+        model.addAttribute("list", list);
 
         return "index";
     }

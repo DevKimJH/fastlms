@@ -51,13 +51,11 @@ public class AdminMemberController extends BaseController {
     public String detail(Model model, MemberParam parameter){
         parameter.init();
 
-        System.out.println("11111111111111");
         MemberDto member = memberService.detail(parameter.getUserId());
         model.addAttribute("member", member);
 
         List<LoginHistoryDto> historyList = memberService.listHistory(parameter.getUserId());
         model.addAttribute("historyList", historyList);
-        System.out.println("2222222222222222");
 
         return "admin/member/detail";
     }

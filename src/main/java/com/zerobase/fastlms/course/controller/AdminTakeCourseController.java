@@ -60,10 +60,6 @@ public class AdminTakeCourseController extends BaseController{
     @PostMapping("/admin/takecourse/status.do")
     public String status(Model model, TakeCourseParam parameter){
 
-        System.out.println("####################");
-        System.out.println(parameter.toString());
-        System.out.println("####################");
-
         ServiceResult result = takeCourseService.updateStatus(parameter.getId(), parameter.getStatus());
         if(!result.isResult()){
             model.addAttribute("message", result.getMessage());

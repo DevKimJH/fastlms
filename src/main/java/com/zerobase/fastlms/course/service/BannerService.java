@@ -41,4 +41,10 @@ public interface BannerService {
      * 전체 강좌 목록
      */
     List<CourseDto> listAll();
+
+
+    /**
+     * 프론트 배너
+     */
+    List<BannerDto> frontList();
 }

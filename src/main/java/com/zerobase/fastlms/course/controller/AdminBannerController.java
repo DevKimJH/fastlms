@@ -138,10 +138,6 @@ public class AdminBannerController extends BaseController{
                 , MultipartFile file
                 , BannerInput parameter){
 
-        System.out.println("##########################");
-        System.out.println(parameter.toString());
-        System.out.println("##########################");
-
 
         String saveFilename = "";
         String urlFilename = "";
@@ -181,7 +177,6 @@ public class AdminBannerController extends BaseController{
                 return "common/error";
             }
 
-            System.out.println("%%%%%%" + parameter.toString());
             boolean result = bannerService.set(parameter);
 
         }

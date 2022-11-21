@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface BannerRepository extends JpaRepository<Banner, Long> {
 
-    //Optional<List<Banner>> findByCategoryId(long categoryId);
+    Optional<List<Banner>> findByPostYnOrderBySortValue(boolean postYn);
 
 }
 

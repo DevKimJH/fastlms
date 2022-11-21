@@ -36,14 +36,27 @@ public class BannerDto {
     // 추가 컬럼
     long totalCount;
     long seq;
+    String targetText;
+
 
     public static BannerDto of(Banner banner) {
+
+        String target = "";
+
+        if(banner.getCategoryId() == 1){
+            target = "_target";
+        }
+        else if(banner.getCategoryId() == 2){
+            target = "_self";
+        }
+
         return BannerDto.builder()
                 .id(banner.getId())
                 .categoryId(banner.getCategoryId())
                 .subject(banner.getSubject())
                 .urlAddress(banner.getUrlAddress())
                 .sortValue(banner.getSortValue())
+                .targetText(target)
                 .postYn(banner.isPostYn())
                 .regDt(banner.getRegDt())
                 .udtDt(banner.getUdtDt())

@@ -302,11 +302,6 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public boolean updatePassword(String userId, String password) {
 
-
-        System.out.println("####################");
-        System.out.println(userId);
-        System.out.println("####################");
-
         // 현재 시스템에서 username 은 email 의미
         Optional<Member> optionalMember = memberRepository.findById(userId);
 

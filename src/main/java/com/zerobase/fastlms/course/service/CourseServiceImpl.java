@@ -72,10 +72,7 @@ public class CourseServiceImpl implements CourseService{
     @Override
     public boolean set(CourseInput parameter) {
 
-        System.out.println("####################################");
-        System.out.println(parameter.toString());
         LocalDate saleEndDt = getLocalDate(parameter.getSaleEndDtText());
-        System.out.println(saleEndDt);
 
         Optional<Course> optionalCourse = courseRepository.findById(parameter.getId());
 
@@ -83,8 +80,6 @@ public class CourseServiceImpl implements CourseService{
             return false;
         }
 
-        System.out.println("ENTER");
-        System.out.println("####################################");
         Course course = optionalCourse.get();
         course.setCategoryId(parameter.getCategoryId());
         course.setSubject(parameter.getSubject());
